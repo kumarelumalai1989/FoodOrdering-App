@@ -1,14 +1,28 @@
 import RestaurantCard from "./RestaurantCard";
 import {restList} from "../utils/mockData"
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { SWIGGY_API_URL } from "../utils/Constants";
 
-const restoContainerStyle = {"display":"flex", "flex-wrap":"wrap"}
 const filterStyle  = {"margin": "10px"};
 
 const Body = ()=>
 {
-    console.log(restList);
-    const [restaurantList, setrestaurantList] = useState(restList);
+    const [restaurantList, setrestaurantList] = useState([]);
+
+    useEffect(
+      ()=>{ 
+        fetchRestaurantsList();
+      }, []
+    );
+
+    const fetchRestaurantsList = async ()=>
+    {
+      const response = await fetch(SWIGGY_API_URL);
+      const json_data = await response.json();
+      console.log(json_data);
+      setrestaurantList(json_data?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+    }
+
     return (<div className="bodyContainer">
         <div className="res-filter" style={filterStyle}><button onClick={()=>{
           const filteredList = restaurantList.filter(
@@ -16,7 +30,7 @@ const Body = ()=>
           setrestaurantList(filteredList);
         }
         }>Top Rated Restaurants</button></div>
-        <div className="restoContainer" style={restoContainerStyle}>
+        <div className="restoContainer">
           { 
              restaurantList.map(restaurant=><RestaurantCard key={restaurant.info.id} restObj={restaurant} />)
           }
