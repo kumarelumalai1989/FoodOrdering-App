@@ -1,7 +1,7 @@
 import RestaurantCard from "./RestaurantCard";
-import {restList} from "../utils/mockData"
 import { useEffect, useState } from "react";
 import { SWIGGY_API_URL } from "../utils/Constants";
+import Shimmer from "./Shimmer";
 
 const filterStyle  = {"margin": "10px"};
 
@@ -21,6 +21,11 @@ const Body = ()=>
       const json_data = await response.json();
       console.log(json_data);
       setrestaurantList(json_data?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+    }
+    // Conditional rendering - Rendering in the form of condition
+    if(restaurantList.length===0)
+    {
+      return <Shimmer />;
     }
 
     return (<div className="bodyContainer">
